@@ -61,6 +61,7 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 		schema_ns = rdflib.Namespace('http://www.example.org/shape2geosparql/' + os.path.basename(infile).split('.shp')[0] + '/ontology/')
 	else:
 		schema_ns = rdflib.Namespace(schema_ns)
+
 	geo = rdflib.Namespace('http://www.opengis.net/ont/geosparql#')
 	sf = rdflib.Namespace('http://www.opengis.net/ont/sf#')
 	w3geo = rdflib.Namespace('http://www.w3.org/2003/01/geo/wgs84_pos#')
@@ -84,6 +85,8 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 		f_id_txt = str(feature)
 		f_id = data_ns[f_id_txt]
 	
+		g.add((f_id, RDF['type'], sf['Feature']))
+
 		# TODO: Should properties really be lowercased?
 		for field in range(f.GetFieldCount()):
 			g.add((f_id, schema_ns[f.GetFieldDefnRef(field).GetName().lower()], rdflib.Literal(f.GetField(field))))
@@ -93,6 +96,7 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 	
 		geom_id = data_ns[f_id_txt + '_geom']
 		g.add((f_id, sf['hasGeometry'], geom_id))
+		g.add((geom_id, RDF['type'], sf['Geometry']))
 	
 		geom_type = geometry.GetGeometryName().lower()
 		g.add((geom_id, RDF['type'], sf[onto_dic[geom_type]]))
