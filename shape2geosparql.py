@@ -6,7 +6,7 @@ from osgeo import ogr, osr
 class MissingFile(Exception):
 	pass
 
-def check_files(shapefile, ignore_prj=False):
+def check_files(shapefile, ignore_prj=True):
 	'''Checks that the main files (.shp, .shx, .dbf, .prj) 
 	are present and accessible.'''
 
