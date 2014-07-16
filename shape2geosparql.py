@@ -97,7 +97,7 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 		geometry.Transform(tr)
 	
 		geom_id = data_ns[f_id_txt + '_geom']
-		g.add((f_id, sf['hasGeometry'], geom_id))
+		g.add((f_id, geo['hasGeometry'], geom_id))
 		g.add((geom_id, RDF['type'], sf['Geometry']))
 	
 		geom_type = geometry.GetGeometryName().lower()
