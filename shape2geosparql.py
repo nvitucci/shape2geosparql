@@ -6,7 +6,7 @@ from osgeo import ogr, osr
 class MissingFile(Exception):
 	pass
 
-def check_files(shapefile, ignore_prj=True):
+def check_files(shapefile, ignore_prj=False):
 	'''Checks that the main files (.shp, .shx, .dbf, .prj) 
 	are present and accessible.'''
 
@@ -70,12 +70,11 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 	wgs84 = osr.SpatialReference()
 	wgs84.ImportFromEPSG(4326)
 	
-	# epsg3003 = osr.SpatialReference()
-	# epsg3003.ImportFromEPSG(3003)
-	# tr = osgeo.osr.CoordinateTransformation(epsg3003, wgs84)
-	
 	shape = osgeo.ogr.Open(infile)
 	layer = shape.GetLayer()
+	
+	source_sr = layer.GetSpatialRef() 
+	tr = osgeo.osr.CoordinateTransformation(source_sr, wgs84)
 	
 	g = rdflib.Graph()
 	
@@ -92,7 +91,10 @@ def make_rdf(infile, outfile, data_ns=None, schema_ns=None):
 			g.add((f_id, schema_ns[f.GetFieldDefnRef(field).GetName().lower()], rdflib.Literal(f.GetField(field))))
 	
 		geometry = f.geometry()
-		geometry.TransformTo(wgs84)
+
+		# geometry.TransformTo(wgs84)
+		# NOTE: this should be faster
+		geometry.Transform(tr)
 	
 		geom_id = data_ns[f_id_txt + '_geom']
 		g.add((f_id, sf['hasGeometry'], geom_id))
