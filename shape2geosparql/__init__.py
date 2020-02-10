@@ -1,0 +1,1 @@
+from shape2geosparql.shape2geosparql import convert
