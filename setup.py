@@ -5,10 +5,10 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='shape2geosparql',
-    version='0.1.0',
+    version='0.1.1',
     author='Nicola Vitucci',
     author_email='nicola.vitucci@gmail.com',
-    description='Convert shapefile to GeoSPARQL',
+    description='Convert shapefiles to GeoSPARQL',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/nvitucci/shape2geosparql',
